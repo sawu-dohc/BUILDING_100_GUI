@@ -1,0 +1,79 @@
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.fxml.FXML;
+import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
+
+import java.util.StringJoiner;
+
+public class DijkstrasController_JAVAFX {
+    @FXML
+    TextArea ta1;
+    @FXML
+    Label label1, label2, label3;
+    @FXML
+    ListView listView1, listView2;
+
+
+    public void initialize(){
+        DijkstrasBuilding_JAVAFX bldg2 = new DijkstrasBuilding_JAVAFX();
+        ObservableList<String> hallNames = FXCollections.observableArrayList(bldg2.getList());
+        listView1.setItems(hallNames);
+        listView2.setItems(hallNames);
+    }
+    public void handle(MouseEvent event){
+
+    }
+    @FXML
+    public void onGo(){
+        DijkstrasBuilding_JAVAFX bldg1 = new DijkstrasBuilding_JAVAFX();
+        DijkstraShortestPath shortestPath = new DijkstraShortestPath();
+        StringJoiner sj1 = new StringJoiner(" ");
+
+        Integer counter = 0;
+        String a,b,c;
+        a = "\nTo get there,";
+        b = " go to ";
+        c = " then go to ";
+        Node startNode = null;
+        Node endNode = null;
+
+        for (Node s : bldg1.directory ) {
+            if (s.getName().equals(listView1.getSelectionModel().getSelectedItem())) {
+                startNode = s;
+
+            }
+        }
+
+        for (Node s : bldg1.directory) {
+            if (s.getName().equals(listView2.getSelectionModel().getSelectedItem())) {
+                endNode = s;
+
+            }
+        }
+
+        shortestPath.computeShortestPaths(startNode);
+        sj1.add(a);
+
+        for (int i = 0; i < shortestPath.getShortestPathTo(endNode).size(); i++) {
+            if (i == 0) {
+                sj1.add(b);
+            } else
+            {
+                sj1.add(c);
+            }
+            sj1.add( "\n" + shortestPath.getShortestPathTo(endNode).get(i) );
+        }
+        ta1.setText(sj1.toString());
+
+        for (Node s: bldg1.directory) {
+            s.setDistance(Integer.MAX_VALUE);
+            s.setVisited(false);
+            s.setPredecessor(null);
+        }
+
+    }
+
+
+}
+
